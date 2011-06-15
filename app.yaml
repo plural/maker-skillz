@@ -1,0 +1,14 @@
+application: maker-skillz
+version: 1
+runtime: python
+api_version: 1
+
+handlers:
+- url: /javascript
+  static_dir: javascript
+
+- url: /stylesheets
+  static_dir: stylesheets
+
+- url: .*
+  script: main.py

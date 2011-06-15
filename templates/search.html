@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block title %}Makers into {{ skill }}{% endblock %}
+{% block page_title %}Makers into {{ skill }}{% endblock %}
+
+{% block main_content %}
+<div id="left_spacer" class="grid_3"><br /></div>
+<div id="main_content" class="grid_6">
+  <form action="/search" method="get" id="search_form" name="search_form">
+    Search for skills: <input type="text" name="skill" id="skill" value="{{ skill }}"/>
+    <input type="submit" id="submit" name="submit" value="Search">
+  </form>
+
+{% if have_results %}
+    <p>
+      Makers into "{{ skill }}"
+    </p>
+    <p>
+    <ul>
+    {% for maker in makers %}
+      <li> {{ maker.first_name }} {{ maker.last_name }}:
+      {% for maker_skill in maker.tags %}
+        <a href="/search?skill={{ maker_skill|urlencode }}">{{ maker_skill }}</a>
+      {% endfor %}
+      </li>
+    {% endfor %}
+    </ul>
+    </p>
+{% endif %}
+{% endblock %}

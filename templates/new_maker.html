@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block title %}Add A New Maker{% endblock %}
+{% block page_title %}Add A New Maker{% endblock %}
+
+{% block main_content %}
+<div id="left_spacer" class="grid_3"><br /></div>
+<div id="main_content" class="grid_6">
+    <p>
+
+    Once you fill out this form and the referring member approves your
+submission your entry will be posted and you will be able to edit your profile
+any time you want.
+
+    </p>
+
+<form action="/new_maker" enctype="multipart/form-data" method="post">
+  <div>First Name: <input type="text" id="first_name" name="first_name" /></div>
+  <div>Last Name: <input type="text" id="last_name" name="last_name" /></div>
+  <div>Image (will be resized to fit in 800x450) <input type="file" id="image" name="image"/></div>
+  <div>Interests, Programming Languages, Tools, Techniques, Interests (comma separated):
+    <textarea id="tags" name="tags" cols=80 rows=3></textarea>
+  </div>
+  <div><input type="submit" value="Add New Maker"></div>
+</form>
+</div>
+<div id="right_spacer" class="grid_3"><br /></div>
+{% endblock %}

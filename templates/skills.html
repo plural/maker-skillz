@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block title %}Makers into {{ tag }}{% endblock %}
+{% block page_title %}Makers into {{ tag }}{% endblock %}
+
+{% block main_content %}
+<div id="left_spacer" class="grid_3"><br /></div>
+<div id="main_content" class="grid_6">
+    <p>
+    Mad Skillz, Yo!
+    </p>
+    <p>
+    <ul>
+    {% for skill in skills %}
+      <li>
+        <a href="/search?skill={{ skill }}">{{ skill }}</a>
+      </li>
+    {% endfor %}
+    </ul>
+    </p>
+{% endblock %}
