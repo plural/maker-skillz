@@ -48,8 +48,8 @@ class NewMaker(webapp.RequestHandler):
     maker = Maker()
     maker.first_name = self.request.get('first_name')
     maker.last_name = self.request.get('last_name')
-#    if self.request.get("image"):
-#      maker.image = images.resize(self.request.get("image"), 200, 200)
+    if self.request.get("image"):
+      maker.image = images.resize(self.request.get("image"), 200, 200)
     tags = self.request.get("tags").split(",")
     for tag in tags:
       maker.tags.append(tag)
