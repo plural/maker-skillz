@@ -13,7 +13,7 @@
     <ul>
     {% for skill in skills %}
       <li>
-        <a href="/search?skill={{ skill }}">{{ skill }}</a>
+        <a href="/search?skill={{ skill|urlencode }}">{{ skill }}</a>
       </li>
     {% endfor %}
     </ul>

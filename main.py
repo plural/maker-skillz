@@ -21,6 +21,11 @@ class Maker(db.Model):
   image = db.BlobProperty()
   tags = db.StringListProperty()
 
+  def getImgSrc(self):
+    if self.image:
+      return '<img src="/pic?maker=%s" width=200 height=200 />' % self.key()
+    else:
+      return ""
 
 class MeritBadge(db.Model):
   name = db.StringProperty()
@@ -69,6 +74,22 @@ class Makers(webapp.RequestHandler):
     self.response.out.write(template.render(getTemplatePath('makers.html'),
                                             template_values))
 
+class Pic(webapp.RequestHandler):
+  def detect_mime_type(self, image):
+    if image[1:4] == 'PNG': return 'image/png'
+    if image[0:3] == 'GIF': return 'image/gif'
+    if image[6:10] == 'JFIF': return 'image/jpeg'
+    return None
+
+  def get(self):
+    maker = Maker.get(self.request.get('maker'))
+    if maker.image:
+      filetype = self.detect_mime_type(maker.image)
+      self.response.headers['Content-Type'] = filetype
+      self.response.out.write(maker.image)
+    else:
+      self.response.out.write('no image found')
+
 class Skills(webapp.RequestHandler):
   def get(self):
     skills = {}
@@ -110,6 +131,7 @@ def main():
     ('/', Index),
     ('/new_maker', NewMaker),
     ('/makers', Makers),
+    ('/pic', Pic),
     ('/skills', Skills),
     ('/search', Search),
   ]
