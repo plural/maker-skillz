@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block title %}Add A New Merit Badge{% endblock %}
+{% block page_title %}Add A New Merit Badge{% endblock %}
+
+{% block main_content %}
+<div id="left_spacer" class="grid_3"><br /></div>
+<div id="main_content" class="grid_6">
+    <p>
+    Add a new Merit Badge
+    </p>
+
+<form action="/new_badge" enctype="multipart/form-data" method="post">
+  <div>Name: <input type="text" id="name" name="name" /></div>
+  <div>Description: <input type="text" id="description" name="description" /></div>
+  <div>Requirement: <input type="text" id="requirements" name="requirements" /></div>
+  <div>Image (will be resized to fit in 800x450) <input type="file" id="image" name="image"/></div>
+  <div><input type="submit" value="Add New Merit Badge"></div>
+</form>
+</div>
+<div id="right_spacer" class="grid_3"><br /></div>
+{% endblock %}

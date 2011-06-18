@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block title %}Makers into {{ tag }}{% endblock %}
+{% block page_title %}Merit Badges{% endblock %}
+
+{% block main_content %}
+<div id="left_spacer" class="grid_3"><br /></div>
+<div id="main_content" class="grid_6">
+    <p>
+    Merit Badges, Yo! <a href="/new_badge">Add a new Merit Badge</a>
+    </p>
+    <p>
+    <ul>
+    {% for badge in badges %}
+      <li>
+        {{ badge.getImgSrc }}<a href="/search?badge={{ badge.key|urlencode }}">{{ badge.name }}</a>:{{ badge.description }}
+      </li>
+    {% endfor %}
+    </ul>
+    </p>
+{% endblock %}

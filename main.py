@@ -32,7 +32,13 @@ class MeritBadge(db.Model):
   description = db.StringProperty()
   requirements = db.StringProperty()
   image = db.BlobProperty()
+  granters = db.ListProperty(db.Key)
 
+  def getImgSrc(self):
+    if self.image:
+      return '<img src="/pic?badge=%s" width=200 height=200 />' % self.key()
+    else:
+      return ""
 
 class Index(webapp.RequestHandler):
   def get(self):
@@ -62,6 +68,22 @@ class NewMaker(webapp.RequestHandler):
 
     self.redirect('/')
 
+class NewBadge(webapp.RequestHandler):
+  def get(self):
+    template_values = {}
+    self.response.out.write(template.render(getTemplatePath('new_badge.html'),
+                                            template_values))
+
+  def post(self):
+    badge = MeritBadge()
+    badge.name = self.request.get('name')
+    badge.description = self.request.get('description')
+    badge.requirements = self.request.get('requirments')
+    if self.request.get("image"):
+      badge.image = images.resize(self.request.get("image"), 200, 200)
+    badge.put()
+
+    self.redirect('/badges')
 
 class Makers(webapp.RequestHandler):
   def get(self):
@@ -82,13 +104,22 @@ class Pic(webapp.RequestHandler):
     return None
 
   def get(self):
-    maker = Maker.get(self.request.get('maker'))
-    if maker.image:
-      filetype = self.detect_mime_type(maker.image)
-      self.response.headers['Content-Type'] = filetype
-      self.response.out.write(maker.image)
-    else:
-      self.response.out.write('no image found')
+    if self.request.get("maker"):
+      maker = Maker.get(self.request.get('maker'))
+      if maker.image:
+        filetype = self.detect_mime_type(maker.image)
+        self.response.headers['Content-Type'] = filetype
+        self.response.out.write(maker.image)
+      else:
+        self.response.out.write('no image found')
+    elif self.request.get("badge"):
+      badge = MeritBadge.get(self.request.get('badge'))
+      if badge.image:
+        filetype = self.detect_mime_type(badge.image)
+        self.response.headers['Content-Type'] = filetype
+        self.response.out.write(badge.image)
+      else:
+        self.response.out.write('no image found')
 
 class Skills(webapp.RequestHandler):
   def get(self):
@@ -105,6 +136,16 @@ class Skills(webapp.RequestHandler):
       'skills': skills
     }
     self.response.out.write(template.render(getTemplatePath('skills.html'),
+                                            template_values))
+
+class Badges(webapp.RequestHandler):
+  def get(self):
+    badges_query = MeritBadge.all()
+    badges = badges_query.fetch(100)
+    template_values = {
+      'badges': badges,
+    }
+    self.response.out.write(template.render(getTemplatePath('badges.html'),
                                             template_values))
 
 class Search(webapp.RequestHandler):
@@ -129,6 +170,8 @@ class Search(webapp.RequestHandler):
 def main():
   paths = [
     ('/', Index),
+    ('/badges', Badges),
+    ('/new_badge', NewBadge),
     ('/new_maker', NewMaker),
     ('/makers', Makers),
     ('/pic', Pic),
