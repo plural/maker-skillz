@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+import logging
 import os
 
 from google.appengine.ext import db
@@ -20,12 +21,16 @@ class Maker(db.Model):
   last_name = db.StringProperty()
   image = db.BlobProperty()
   tags = db.StringListProperty()
+  badges = db.ListProperty(db.Key)
 
   def getImgSrc(self):
     if self.image:
       return '<img src="/pic?maker=%s" width=200 height=200 />' % self.key()
     else:
       return ""
+
+  def getBadges(self):
+    return MeritBadge.get(self.badges)
 
 class MeritBadge(db.Model):
   name = db.StringProperty()
@@ -50,7 +55,9 @@ class Index(webapp.RequestHandler):
 
 class NewMaker(webapp.RequestHandler):
   def get(self):
+    badges = MeritBadge.all().fetch(100)
     template_values = {
+      'badges': badges,
     }
     self.response.out.write(template.render(getTemplatePath('new_maker.html'),
                                             template_values))
@@ -64,6 +71,13 @@ class NewMaker(webapp.RequestHandler):
     tags = self.request.get("tags").split(",")
     for tag in tags:
       maker.tags.append(tag)
+    badges = self.request.str_params.getall("badges")
+    for badge in badges:
+      logging.info("Badge is %s" % badge)
+      meritBadge = MeritBadge.get(badge)
+      if meritBadge:
+        logging.info("Found a badge named %s" % meritBadge.name)
+        maker.badges.append(meritBadge.key())
     maker.put()
 
     self.redirect('/')
@@ -75,7 +89,7 @@ class NewBadge(webapp.RequestHandler):
                                             template_values))
 
   def post(self):
-    badge = MeritBadge()
+    badge = MeritBadge.all()
     badge.name = self.request.get('name')
     badge.description = self.request.get('description')
     badge.requirements = self.request.get('requirments')
@@ -153,15 +167,22 @@ class Search(webapp.RequestHandler):
     have_results = False
     makers = []
     skill = self.request.get("skill")
-    if skill != "":
+    badge = self.request.get("badge")
+    if skill:
       have_results = True
       makers_query = Maker.all()
       makers_query.filter("tags", skill)
+      makers = makers_query.fetch(100)
+    elif badge:
+      have_results = True
+      makers_query = Maker.all()
+      makers_query.filter("badges", badge)
       makers = makers_query.fetch(100)
 
     template_values = {
       'makers': makers,
       'skill': skill,
+      'badge': badge,
       'have_results': have_results,
     }
     self.response.out.write(template.render(getTemplatePath('search.html'),

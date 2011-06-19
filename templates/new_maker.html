@@ -21,6 +21,11 @@ any time you want.
   <div>Interests, Programming Languages, Tools, Techniques, Interests (comma separated):
     <textarea id="tags" name="tags" cols=80 rows=3></textarea>
   </div>
+  <div>
+    {% for badge in badges %}
+    <input type="checkbox" id="badges" name="badges" value="{{ badge.key|escape }}">{{badge.name}}<br />
+    {% endfor %}
+  </div>
   <div><input type="submit" value="Add New Maker"></div>
 </form>
 </div>

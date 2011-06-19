@@ -12,10 +12,15 @@
     <p>
     <ul>
     {% for maker in makers %}
-      <li> {{ maker.getImgSrc }} {{ maker.first_name }} {{ maker.last_name }}:
-      {% for maker_tag in maker.tags %}
+      <li> {{ maker.getImgSrc }} {{ maker.first_name }} {{ maker.last_name }}
+	<br />
+        Skillz: {% for maker_tag in maker.tags %}
         <a href="/search?skill={{ maker_tag|urlencode }}">{{ maker_tag }}</a>
-      {% endfor %}
+	{% endfor %}
+	<br />
+	Badges: {% for badge in maker.getBadges %}
+	{{ badge.getImgSrc }}<a href="/search?badge={{ badge|urlencode }}">{{ badge.name }}</a>
+	{% endfor %}
       </li>
     {% endfor %}
     </ul>
