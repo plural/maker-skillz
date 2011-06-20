@@ -13,7 +13,7 @@
 
 {% if have_results %}
     <p>
-      Makers into "{{ skill }}"
+      Makers {% if skill %}with skill "{{ skill }}"{% else %} with badge for "{{ badge_name }}"{% endif %}.
     </p>
     <p>
     <ul>

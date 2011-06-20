@@ -168,6 +168,7 @@ class Search(webapp.RequestHandler):
     makers = []
     skill = self.request.get("skill")
     badge = self.request.get("badge")
+    meritbadge = MeritBadge()
     if skill:
       have_results = True
       makers_query = Maker.all()
@@ -176,13 +177,15 @@ class Search(webapp.RequestHandler):
     elif badge:
       have_results = True
       makers_query = Maker.all()
-      makers_query.filter("badges", badge)
+      makers_query.filter("badges", db.Key(badge))
+      meritbadge = MeritBadge.get(badge)
       makers = makers_query.fetch(100)
 
     template_values = {
       'makers': makers,
       'skill': skill,
       'badge': badge,
+      'badge_name' : meritbadge.name if badge else '',
       'have_results': have_results,
     }
     self.response.out.write(template.render(getTemplatePath('search.html'),
