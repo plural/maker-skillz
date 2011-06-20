@@ -11,11 +11,7 @@
 <div id="header_contents" class="grid_12 ">
   <h1>{% block page_title %}Maker Skillz{% endblock %}</h1>
   <p>
-    <a href="/recent">Recent Changes</a>
-    |
     <a href="/makers">Makers</a>
-    |
-    <a href="/new_maker">New Profile</a>
     |
     <a href="/skills">Skills</a>
     |
@@ -23,7 +19,11 @@
     |
     <a href="/search">Search</a>
     |
+    {% if is_logged_in %}
     <a href="/me">My Profile</a>
+    {% else %}
+    <a href="/signup">Sign Up</a>
+    {% endif %}
     |
     <a href="/about">About</a>
   </p>
